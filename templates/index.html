@@ -82,6 +82,7 @@
         <table>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Title</th>
                     <th>Severity</th>
                     <th>Status</th>
@@ -94,10 +95,18 @@
             </thead>
             <tbody>
                 {% for inc in incidents %}
+                {% set events = timeline_map.get(inc.id, []) %}
                 <tr class="
                     {%- if inc.severity == 'Critical' and inc.status != 'Closed' %} row-critical
                     {%- elif inc.severity == 'High' and is_overdue(inc) and inc.status != 'Closed' %} row-overdue-high
                     {%- endif %}">
+                    <td class="toggle-cell">
+                        {% if events %}
+                        <button class="timeline-toggle" onclick="toggleTimeline('tl-{{ inc.id }}')" title="Show activity timeline">
+                            &#9654; <span class="event-count">{{ events|length }}</span>
+                        </button>
+                        {% endif %}
+                    </td>
                     <td>
                         <strong>{{ inc.title }}</strong>
                         <br><span style="font-size:.78rem;color:#6c757d;">{{ inc.description[:80] }}{% if inc.description|length > 80 %}&hellip;{% endif %}</span>
@@ -135,10 +144,26 @@
                         </form>
                     </td>
                 </tr>
+                <!-- Timeline expandable row -->
+                {% if events %}
+                <tr class="timeline-row" id="tl-{{ inc.id }}" style="display:none;">
+                    <td colspan="9">
+                        <div class="timeline">
+                            {% for ev in events %}
+                            <div class="timeline-event">
+                                <span class="tl-icon">{{ ev.icon|safe }}</span>
+                                <span class="tl-time">{{ ev.created_at[:16] }}</span>
+                                <span class="tl-msg">{{ ev.message }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
                 {% endfor %}
                 {% if not incidents %}
                 <tr>
-                    <td colspan="8" style="text-align:center;padding:24px;color:#6c757d;">No incidents match the current filters.</td>
+                    <td colspan="9" style="text-align:center;padding:24px;color:#6c757d;">No incidents match the current filters.</td>
                 </tr>
                 {% endif %}
             </tbody>
@@ -185,6 +210,20 @@
     </div>
 
 </div>
+
+<script>
+function toggleTimeline(id) {
+    var row = document.getElementById(id);
+    var btn = row.previousElementSibling.querySelector('.timeline-toggle');
+    if (row.style.display === 'none') {
+        row.style.display = '';
+        btn.classList.add('open');
+    } else {
+        row.style.display = 'none';
+        btn.classList.remove('open');
+    }
+}
+</script>
 
 </body>
 </html>
