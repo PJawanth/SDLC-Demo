@@ -357,3 +357,77 @@ tr.row-overdue-high:hover {
     color: var(--color-danger);
     font-weight: 600;
 }
+
+/* Timeline toggle button */
+.toggle-cell {
+    width: 40px;
+    text-align: center;
+}
+
+.timeline-toggle {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 3px 6px;
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: transform 0.15s;
+}
+
+.timeline-toggle.open {
+    transform: rotate(90deg);
+}
+
+.timeline-toggle .event-count {
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 8px;
+    padding: 0 5px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* Timeline row */
+.timeline-row td {
+    background: #f8f9fb;
+    padding: 0 14px 12px 54px !important;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 8px;
+}
+
+.timeline-event {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.tl-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.tl-time {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-family: "Cascadia Code", "Consolas", monospace;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.tl-msg {
+    color: var(--color-text);
+}
