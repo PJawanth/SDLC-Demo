@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime, timedelta
 import uuid
-import copy
 import os
 
 app = Flask(__name__)
@@ -59,16 +58,22 @@ def get_timeline_map() -> dict[str, list[dict]]:
         result[k] = list(reversed(result[k]))
     return result
 
+
 # ---------------------------------------------------------------------------
 # On-call roster (in-memory)
 # ---------------------------------------------------------------------------
 
 on_call_roster: list[dict] = [
-    {"id": str(uuid.uuid4()), "name": "Alice", "email": "alice@example.com", "team": "Payment Service", "on_call": True},
-    {"id": str(uuid.uuid4()), "name": "Bob", "email": "bob@example.com", "team": "Compute Cluster", "on_call": True},
-    {"id": str(uuid.uuid4()), "name": "Carol", "email": "carol@example.com", "team": "API Gateway", "on_call": False},
-    {"id": str(uuid.uuid4()), "name": "Eve", "email": "eve@example.com", "team": "Auth Service", "on_call": True},
-    {"id": str(uuid.uuid4()), "name": "Frank", "email": "frank@example.com", "team": "Logging Infrastructure", "on_call": True},
+    {"id": str(uuid.uuid4()), "name": "Alice", "email": "alice@example.com",
+     "team": "Payment Service", "on_call": True},
+    {"id": str(uuid.uuid4()), "name": "Bob", "email": "bob@example.com",
+     "team": "Compute Cluster", "on_call": True},
+    {"id": str(uuid.uuid4()), "name": "Carol", "email": "carol@example.com",
+     "team": "API Gateway", "on_call": False},
+    {"id": str(uuid.uuid4()), "name": "Eve", "email": "eve@example.com",
+     "team": "Auth Service", "on_call": True},
+    {"id": str(uuid.uuid4()), "name": "Frank", "email": "frank@example.com",
+     "team": "Logging Infrastructure", "on_call": True},
 ]
 
 # ---------------------------------------------------------------------------
@@ -95,8 +100,9 @@ def send_notification(incident_id: str, recipient: str, channel: str,
     notification_log.append(notification)
     if len(notification_log) > MAX_NOTIFICATION_LOG:
         del notification_log[:len(notification_log) - MAX_NOTIFICATION_LOG]
-    add_event(incident_id, "notified",
-             f"Notification sent to {recipient} ({notif_type}, {channel})")
+    add_event(
+        incident_id, "notified",
+        f"Notification sent to {recipient} ({notif_type}, {channel})")
     return notification
 
 
@@ -155,7 +161,7 @@ def check_overdue_warnings() -> list[dict]:
             continue
         inc["overdue_notified"] = True
         add_event(inc["id"], "overdue_warning",
-                  f"Overdue warning – incident past due")
+                  "Overdue warning \u2013 incident past due")
         assigned = inc.get("assigned_to") or inc.get("owner", "")
         if assigned:
             n = send_notification(
